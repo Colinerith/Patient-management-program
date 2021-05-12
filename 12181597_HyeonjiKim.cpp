@@ -62,16 +62,13 @@ public:
 		else
 			parent->right = newNode;
 
-		while (Double Red) { 	// Double Red
+		current = newNode;
+		while (parent->color == 'R') { 	// Double Red
 			if (parent == parent->parent->left) {
 				// parent's sibling color check
 				if (parent->parent->right->color == 'B') {
 					//restructure
-					if (newNode == parent->left) { //middle: parent
-						//Node* t1 = newNode->left;
-						//Node* t2 = newNode->right;
-						//Node* t3 = parent->right;
-						//Node* t4 = parent->parent->right;
+					if (current == parent->left) { //middle: parent
 						parent->parent->color = 'R';
 						parent->color = 'B';
 						parent->parent->left = parent->right;
@@ -83,33 +80,39 @@ public:
 					}
 					else { // middle: newNode
 						parent->parent->color = 'R';
-						newNode->color = 'B';
-						parent->right = newNode->left;
-						parent->parent->left = newNode->right;
-						newNode->left = parent;
-						newNode->right = parent->parent;
-						parent->parent = newNode;
-						parent->parent->parent = newNode;
+						current->color = 'B';
+						parent->right = current->left;
+						parent->parent->left = current->right;
+						current->left = parent;
+						current->right = parent->parent;
+						parent->parent = current;
+						parent->parent->parent = current;
 						depth = depth - 2;
 						break;
 					}
 				}
-				else { // Red
-					//recolor
+				else { // recolor
+					parent->color = 'B';
+					parent->parent->right->color = 'B'; //uncle
+					parent->parent->color = 'R';
+					current = parent->parent;
+					parent = current->parent;
+					if (parent == root)
+						parent->color = 'B';
 				}
 			}
 			else if (parent == parent->parent->right) {
 				if (parent->parent->left->color == 'B') {
 					//restructure
-					if (newNode == parent->left) { // middle: newNode
+					if (current == parent->left) { // middle: newNode
 						parent->parent->color = 'R';
-						newNode->color = 'B';
-						newNode->left = parent->parent;
-						newNode->right = parent;
-						parent->parent->right = newNode->left;
-						parent->left = newNode->right;
-						parent->parent = newNode;
-						parent->parent->parent = newNode;
+						current->color = 'B';
+						current->left = parent->parent;
+						current->right = parent;
+						parent->parent->right = current->left;
+						parent->left = current->right;
+						parent->parent = current;
+						parent->parent->parent = current;
 						depth = depth - 2;
 						break;
 					}
@@ -124,8 +127,14 @@ public:
 						break;
 					}
 				}
-				else { // Red
-					//recolor
+				else { // recolor
+					parent->color = 'B';
+					parent->parent->left->color = 'B'; //uncle
+					parent->parent->color = 'R';
+					current = parent->parent;
+					parent = current->parent;
+					if (parent == root)
+						parent->color = 'B';
 				}
 			}
 		}
@@ -143,14 +152,19 @@ public:
 };
 
 int main() {
-	int t;
+	int t, a, d, e, g;
+	string b, c, f;
 	char requirement;
 	cin >> t;
+	RBtree tree;
 
 	while (t--) {
 		cin >> requirement;
 		switch (requirement) {
 		case 'I':
+			cin >> a >> b >> c >> d >> e >> f >> g;
+			Node* newNode = new Node(a, b, c, d, e, f, g);
+			tree.insert(newNode);
 			break;
 		case 'F':
 			break;
