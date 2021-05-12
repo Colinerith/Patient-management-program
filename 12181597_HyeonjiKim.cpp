@@ -41,7 +41,7 @@ public:
 		if (root == NULL) {
 			newNode->color = 'B'; // Root Property: the root is black
 			root = newNode;
-			cout << 0 << 1 << "\n";
+			cout << 0 << " " << 1 << "\n";
 			return;
 		}
 		int depth = 0;
@@ -53,14 +53,70 @@ public:
 				current = current->left;
 			else
 				current = current->right;
-
-			//depthÃß°¡ÇØ¾ßµÊ
+			depth++;
 		}
 
-		if (key < parent->key)
+		newNode->parent = parent;
+		if (newNode->num < parent->num)
 			parent->left = newNode;
 		else
 			parent->right = newNode;
+
+		if (parent->color == 'B') {
+			cout << depth << " " << 1 << "\n";
+			return;
+		}
+		// Double Red
+		if (parent == parent->parent->left) {
+			// parent's sibling color check
+			if (parent->parent->right->color == 'B') {
+				//restructure
+				if (newNode == parent->left) { //middle: parent
+					//Node* t1 = newNode->left;
+					//Node* t2 = newNode->right;
+					//Node* t3 = parent->right;
+					//Node* t4 = parent->parent->right;
+					parent->parent->color = 'R';
+					parent->color = 'B';
+					parent->parent->left = parent->right;
+					parent->right = parent->parent;
+					parent->parent = parent->parent->parent;
+					parent->parent->parent = parent;
+				}
+				else { // middle: newNode
+					parent->parent->color = 'R';
+					newNode->color = 'B';
+					newNode->left = parent;
+					newNode->right = parent->parent;
+					parent->right = newNode->left;
+					parent->parent->left = newNode->right;
+					parent->parent = newNode;
+					parent->parent->parent = newNode;
+				}
+			}
+			else { // Red
+				//recolor
+			}
+		}
+		else if(parent == parent->parent->right) {
+			if (parent->parent->left->color == 'B') {
+				//restructure
+				if (newNode == parent->left) { // middle: newNode
+					newNode->left = parent->parent;
+					newNode->right = parent;
+					parent->parent->right = newNode->left;
+					parent->left = newNode->right;
+					parent->parent = newNode;
+					parent->parent->parent = newNode;
+				}
+				else { // middle: parent
+
+				}
+			}
+			else { // Red
+				//recolor
+			}
+		}
 	}
 	void find(int k) {
 
@@ -69,13 +125,6 @@ public:
 
 	}
 	void epidemic(string di) {
-
-	}
-
-	void restructure() {
-
-	}
-	void recolor() {
 
 	}
 };
