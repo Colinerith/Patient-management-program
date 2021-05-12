@@ -167,6 +167,8 @@ int main() {
 			tree.insert(newNode);
 			break;
 		case 'F':
+			cin >> a;
+			tree.find(k);
 			break;
 		case 'A':
 			break;
