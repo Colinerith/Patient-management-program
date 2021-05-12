@@ -62,61 +62,74 @@ public:
 		else
 			parent->right = newNode;
 
-		if (parent->color == 'B') {
-			cout << depth << " " << 1 << "\n";
-			return;
+		while (Double Red) { 	// Double Red
+			if (parent == parent->parent->left) {
+				// parent's sibling color check
+				if (parent->parent->right->color == 'B') {
+					//restructure
+					if (newNode == parent->left) { //middle: parent
+						//Node* t1 = newNode->left;
+						//Node* t2 = newNode->right;
+						//Node* t3 = parent->right;
+						//Node* t4 = parent->parent->right;
+						parent->parent->color = 'R';
+						parent->color = 'B';
+						parent->parent->left = parent->right;
+						parent->right = parent->parent;
+						parent->parent = parent->parent->parent;
+						parent->parent->parent = parent;
+						depth--;
+						break;
+					}
+					else { // middle: newNode
+						parent->parent->color = 'R';
+						newNode->color = 'B';
+						parent->right = newNode->left;
+						parent->parent->left = newNode->right;
+						newNode->left = parent;
+						newNode->right = parent->parent;
+						parent->parent = newNode;
+						parent->parent->parent = newNode;
+						depth = depth - 2;
+						break;
+					}
+				}
+				else { // Red
+					//recolor
+				}
+			}
+			else if (parent == parent->parent->right) {
+				if (parent->parent->left->color == 'B') {
+					//restructure
+					if (newNode == parent->left) { // middle: newNode
+						parent->parent->color = 'R';
+						newNode->color = 'B';
+						newNode->left = parent->parent;
+						newNode->right = parent;
+						parent->parent->right = newNode->left;
+						parent->left = newNode->right;
+						parent->parent = newNode;
+						parent->parent->parent = newNode;
+						depth = depth - 2;
+						break;
+					}
+					else { // middle: parent
+						parent->parent->color = 'R';
+						parent->color = 'B';
+						parent->parent->right = parent->left;
+						parent->left = parent->parent;
+						parent->parent = parent->parent->parent;
+						parent->parent->parent = parent;
+						depth--;
+						break;
+					}
+				}
+				else { // Red
+					//recolor
+				}
+			}
 		}
-		// Double Red
-		if (parent == parent->parent->left) {
-			// parent's sibling color check
-			if (parent->parent->right->color == 'B') {
-				//restructure
-				if (newNode == parent->left) { //middle: parent
-					//Node* t1 = newNode->left;
-					//Node* t2 = newNode->right;
-					//Node* t3 = parent->right;
-					//Node* t4 = parent->parent->right;
-					parent->parent->color = 'R';
-					parent->color = 'B';
-					parent->parent->left = parent->right;
-					parent->right = parent->parent;
-					parent->parent = parent->parent->parent;
-					parent->parent->parent = parent;
-				}
-				else { // middle: newNode
-					parent->parent->color = 'R';
-					newNode->color = 'B';
-					newNode->left = parent;
-					newNode->right = parent->parent;
-					parent->right = newNode->left;
-					parent->parent->left = newNode->right;
-					parent->parent = newNode;
-					parent->parent->parent = newNode;
-				}
-			}
-			else { // Red
-				//recolor
-			}
-		}
-		else if(parent == parent->parent->right) {
-			if (parent->parent->left->color == 'B') {
-				//restructure
-				if (newNode == parent->left) { // middle: newNode
-					newNode->left = parent->parent;
-					newNode->right = parent;
-					parent->parent->right = newNode->left;
-					parent->left = newNode->right;
-					parent->parent = newNode;
-					parent->parent->parent = newNode;
-				}
-				else { // middle: parent
-
-				}
-			}
-			else { // Red
-				//recolor
-			}
-		}
+		cout << depth << " " << 1 << "\n";
 	}
 	void find(int k) {
 
