@@ -168,7 +168,7 @@ int main() {
 			break;
 		case 'F':
 			cin >> a;
-			tree.find(k);
+			tree.find(a);
 			break;
 		case 'A':
 			break;
