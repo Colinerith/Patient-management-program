@@ -3,8 +3,6 @@
 #include<vector>
 using namespace std;
 
-
-
 class Node {
 public:
 	int num; // Patient number
@@ -33,6 +31,7 @@ public:
 };
 
 vector<Node*> patients; // To make it easier to test for epidemic diseases
+// add all patient Nodes' pointer to this vector
 
 class RBtree {
 public:
@@ -85,26 +84,20 @@ public:
 							else
 								parent->parent->parent->right = parent;
 						}
-
 						parent->parent->color = 'R';
 						parent->color = 'B';
 						parent->parent->left = parent->right;
 						parent->right = parent->parent;
 
-						//
 						if(parent->parent->left!=NULL)
-							parent->parent->left->parent = parent->parent;
-						
+							parent->parent->left->parent = parent->parent;				
 
 						Node* temp = parent->parent;
 						parent->parent = parent->parent->parent;
 						temp->parent = parent;
-						//parent->parent->parent = parent;
 
 						if (parent->parent == NULL)
 							root = parent;
-
-						//depth--;
 						break;
 					}
 					else { // middle: newNode
@@ -114,14 +107,11 @@ public:
 							else
 								parent->parent->parent->right = current;
 						}
-
 						parent->parent->color = 'R';
 						current->color = 'B';
-
 						parent->right = current->left;
 						parent->parent->left = current->right;
 
-						//
 						if (parent->parent->left != NULL)
 							parent->parent->left->parent = parent->parent;
 						if (parent->right != NULL)
@@ -129,18 +119,16 @@ public:
 
 						current->left = parent;
 						current->right = parent->parent;
-
 						current->parent = parent->parent->parent;
 						if (current->parent == NULL)
 							root = current;
 
 						parent->parent->parent = current;
 						parent->parent = current;
-						//depth = depth - 2;
 						break;
 					}
 				}
-				else { // recolor
+				else { // Recoloring
 					parent->color = 'B';
 					parent->parent->right->color = 'B'; //uncle
 					parent->parent->color = 'R';
@@ -148,7 +136,7 @@ public:
 					parent = current->parent;
 					if (current == root) {
 						current->color = 'B';
-						cout << calcDepth(newNode->num)  << " " << 1;
+						cout << calcDepth(newNode->num)  << " " << 1 << "\n";
 						return;
 					}
 				}
@@ -163,14 +151,11 @@ public:
 							else
 								parent->parent->parent->right = current;
 						}
-
 						parent->parent->color = 'R';
 						current->color = 'B';
-
 						parent->parent->right = current->left;
 						parent->left = current->right;
 
-						//
 						if(parent->parent->right!=NULL)
 							parent->parent->right->parent = parent->parent;
 						if(parent->left!=NULL)
@@ -185,8 +170,6 @@ public:
 
 						parent->parent->parent = current;
 						parent->parent = current;
-
-						//depth = depth - 2;
 						break;
 					}
 					else { // middle: parent
@@ -196,15 +179,11 @@ public:
 							else
 								parent->parent->parent->right = parent;
 						}
-
 						parent->parent->color = 'R';
 						parent->color = 'B';
-
-
 						parent->parent->right = parent->left;
 						parent->left = parent->parent;
 
-						//
 						if (parent->parent->right != NULL)
 							parent->parent->right->parent = parent->parent;
 
@@ -214,14 +193,10 @@ public:
 
 						if (parent->parent == NULL)
 							root = parent;
-
-						//parent->parent = parent->parent->parent;
-						//parent->parent->parent = parent;
-						//depth--;
 						break;
 					}
 				}
-				else { // recolor
+				else { // Recoloring
 					parent->color = 'B';
 					parent->parent->left->color = 'B'; //uncle
 					parent->parent->color = 'R';
@@ -229,7 +204,7 @@ public:
 					parent = current->parent;
 					if (current == root) {
 						current->color = 'B';
-						cout << calcDepth(newNode->num) << " " << 1;
+						cout << calcDepth(newNode->num) << " " << 1 << "\n";
 						return;
 					}
 				}
@@ -238,13 +213,13 @@ public:
 		cout << calcDepth(newNode->num) << " " << 1 << "\n";
 	}
 
-	int calcDepth(int n) {
+	int calcDepth(int n) { //calculating depth with key n
 		int depth = 0;
 		Node* parent = NULL;
 		Node* current = root;
 		while (current != NULL) { //searching position of newNode
 			parent = current;
-			if (n == parent->num) { //already exists
+			if (n == parent->num) { // found the node
 				return depth;
 			}
 			else if (n < parent->num)
@@ -273,15 +248,16 @@ public:
 				current = current->right;
 			depth++;
 		}
+		// not exists
 		cout << "Not found\n";
 	}
 	void addition(int k, string di, int c) {
 		int depth = 0;
 		Node* parent = NULL;
 		Node* current = root;
-		while (current != NULL) { //searching position of newNode
+		while (current != NULL) { //searching the Node with key k
 			parent = current;
-			if (k == parent->num) { //already exists
+			if (k == parent->num) { //exists
 				//addition
 				parent->records.push_back({ di, c });
 				cout << depth << "\n";
@@ -293,12 +269,13 @@ public:
 				current = current->right;
 			depth++;
 		}
+		// not exists
 		cout << "Not found\n";
 	}
 	void epidemic(string di) {
 		int t = 0;
-		for (Node* n : patients) {
-			if (n->records.back().first == di)
+		for (Node* n : patients) { // test all (patient) nodes
+			if (n->records.back().first.compare(di) == 0) //check only the last one
 				t++;
 		}
 		cout << t << "\n";
@@ -315,20 +292,20 @@ int main() {
 	while (t--) {
 		cin >> requirement;
 		switch (requirement) {
-		case 'I': {
+		case 'I': { // insert
 			cin >> a >> b >> c >> d >> e >> f >> g;
 			Node* newNode = new Node(a, b, c, d, e, f, g);
 			tree.insert(newNode);
 			break; }
-		case 'F':
+		case 'F': //find
 			cin >> a;
 			tree.find(a);
 			break;
-		case 'A':
+		case 'A': //addition
 			cin >> a >> b >> d;
 			tree.addition(a, b, d);
 			break;
-		case 'E':
+		case 'E': //epidemic
 			cin >> b;
 			tree.epidemic(b);
 			break;
